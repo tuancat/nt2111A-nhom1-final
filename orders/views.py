@@ -1,8 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from carts.models import CartItem
+from .forms import OrderForm
+import datetime
+from .models import Order
 
 # Create your views here.
+
+def payments(request):
+    return render(request, 'orders/payments.html')
+
 
 def place_order(request, total=0, quantity=0):
     current_user = request.user
@@ -25,16 +32,17 @@ def place_order(request, total=0, quantity=0):
         form = OrderForm(request.POST)
         if form.is_valid():
             data = Order()
-            data.first_name = form.cleanned_data('first_name')
-            data.last_name = form.cleanned_data('last_name')
-            data.phone = form.cleanned_data('phone')
-            data.mail = form.cleanned_data('mail')
-            data.address_line_1 = form.cleanned_data('address_line_1')
-            data.address_line_2 = form.cleanned_data('address_line_2')
-            data.country = form.cleanned_data('country')
-            data.state = form.cleanned_data('state')
-            data.city = form.cleanned_data('city')
-            data.order_note = form.cleanned_data('order_note')
+            data.user = current_user
+            data.first_name = form.cleanned_data['first_name']
+            data.last_name = form.cleanned_data['last_name']
+            data.phone = form.cleanned_data['phone']
+            data.mail = form.cleanned_data['mail']
+            data.address_line_1 = form.cleanned_data['address_line_1']
+            data.address_line_2 = form.cleanned_data['address_line_2']
+            data.country = form.cleanned_data['country']
+            data.state = form.cleanned_data['state']
+            data.city = form.cleanned_data['city']
+            data.order_note = form.cleanned_data['order_note']
             data.order_total = grand_total
             data.tax = tax
             data.ip = request.META.get('REMOTE_ADDR')
@@ -49,6 +57,15 @@ def place_order(request, total=0, quantity=0):
             order_number = current_date + str(data.id)
             data.order_number = order_number
             data.save()
-            return redirect ('checkout')
+
+            order = Order.objects.get(user=current_user, is_ordered=False, order_number=order_number)
+            context = {
+                'order': order,
+                'cart_items': cart_item,
+                'total': total,
+                'tax': tax,
+                'grand_total': grand_total
+            }
+            return render(request, 'orders/payments.html', context)
     else:
         return redirect('checkout')
