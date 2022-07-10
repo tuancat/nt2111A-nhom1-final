@@ -80,7 +80,7 @@ def place_order(request, total=0, quantity=0):
             data.first_name = form.cleanned_data['first_name']
             data.last_name = form.cleanned_data['last_name']
             data.phone = form.cleanned_data['phone']
-            data.mail = form.cleanned_data['mail']
+            data.email = form.cleanned_data['email']
             data.address_line_1 = form.cleanned_data['address_line_1']
             data.address_line_2 = form.cleanned_data['address_line_2']
             data.country = form.cleanned_data['country']
