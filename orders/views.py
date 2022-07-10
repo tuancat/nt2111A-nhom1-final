@@ -3,7 +3,9 @@ from django.http import HttpResponse
 from carts.models import CartItem
 from .forms import OrderForm
 import datetime
-from .models import Order
+from .models import Order, Payment, OrderProduct
+import json
+
 
 # Create your views here.
 
@@ -34,6 +36,13 @@ def payments(request):
         orderproduct.product_price = item.product.price
         orderproduct.ordered = True
         orderproduct.save()
+
+        cart_items = CartItem.objects.get(id=item.id)
+        product_variation = cart_items.variations.all()
+        orderproduct = OrderProduct.objects.get(id=orderproduct.id)
+        orderproduct.variations.get(product_variation)
+        orderproduct.save()
+        
 
 # Giảm số lượng sản phẩm đã bán
 
