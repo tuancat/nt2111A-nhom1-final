@@ -1,5 +1,5 @@
 from django.db import models
-from account.models import Account
+from accounts.models import Account
 from store.models import Product, Variation
 
 # Create your models here.
@@ -20,8 +20,8 @@ class Payment(models.Model):
 class Order(models.Model):
     STATUS = (
         ('New', 'New'),
-        ('Accepted', 'Accepted')
-        ('Completed', 'Completed')
+        ('Accepted', 'Accepted'),
+        ('Completed', 'Completed'),
         ('Cancelled', 'Cancelled')
     )
 
