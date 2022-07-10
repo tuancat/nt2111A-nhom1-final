@@ -8,6 +8,41 @@ from .models import Order
 # Create your views here.
 
 def payments(request):
+    body = json.loads(request.body)
+    order = Order.objects.get(user=request.user, is_ordered=False, order_number=body['orderID'])
+
+# Lưu chi tiết dao dịch
+    payment = Payment(
+        user = request.user,
+        payment_id = body['transID'],
+        payment_method = body['payment_method'],
+        amount_paid = order.order_total,
+        status = body['status']
+    )
+    payment.save()
+
+#Chuyển tất cả số lượng hàng trong giỏ hàng vào table Order Product
+    cart_items = CartItem.objects.filter(user=request.user)
+
+    for item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        orderproduct.payment = payment
+        orderproduct.user_id = request.user.id
+        orderproduct.product_id = item.product_id
+        orderproduct.quantity = item.quantity
+        orderproduct.product_price = item.product.price
+        orderproduct.ordered = True
+        orderproduct.save()
+
+# Giảm số lượng sản phẩm đã bán
+
+# Xóa giỏ hàng
+
+# Gửi đơn hàng vào mail của khách
+
+# Gửi số đơn hàng và giao dịch id
+
     return render(request, 'orders/payments.html')
 
 
