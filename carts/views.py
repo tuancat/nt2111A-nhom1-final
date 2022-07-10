@@ -29,7 +29,7 @@ def add_cart(request, product_id):
     
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request)) # get the cart using the cart_id present in the session
-    except cart.DoesNotExist:
+    except Cart.DoesNotExist:
         cart = Cart.objects.create(
             cart_id = _cart_id(request)
         )
@@ -45,7 +45,7 @@ def add_cart(request, product_id):
         id = []
         for item in cart_item:
             existing_variation = item.variations.all()
-            ex_var_list.append(existing_variation)
+            ex_var_list.append(list(existing_variation))
             id.append(item.id)
         
         print(ex_var_list)    
@@ -62,9 +62,6 @@ def add_cart(request, product_id):
             if len(product_variation) > 0:
                 item.variations.clear()
                 item.variations.add(*product_variation)
-        #         for item in product_variation:
-        #             cart_item.variations.add(item)
-        # # cart_item.quantity += 1 # cart_item.quantity = cart_item.quantity + 1
             item.save()
     else:
         cart_item = CartItem.objects.create(
@@ -75,20 +72,21 @@ def add_cart(request, product_id):
         if len(product_variation) > 0:
             cart_item.variations.clear()
             cart_item.variations.add(*product_variation)
-            # for item in product_variation:
-            #     cart_item.variations.add(item)
         cart_item.save()
     return redirect('cart')
 
 def remove_cart(request, product_id):
     cart = Cart.objects.get(cart_id=_cart_id(request))
     product = get_object_or_404(Product, id=product_id)
-    cart_item = CartItem.obects.get(product=product, cart=cart)
-    if cart_item.quantity > 1:
-        cart_item.quantity -= 1
-        cart_item.save()
-    else:
-        cart_item.delete()
+    try:
+        cart_item = CartItem.objects.get(product=product, cart=cart)
+        if cart_item.quantity > 1:
+            cart_item.quantity -= 1
+            cart_item.save()
+        else:
+            cart_item.delete()
+    except:
+        pass
     return redirect('cart')
 
 def remove_cart_item(request, product_id):
@@ -113,11 +111,11 @@ def cart(request, total=0, quantity=0, cart_item=None):
     except ObjectDoesNotExist:
         pass # just ignore
 
-        context = {
-            'total': total,
-            'quantity': quantity,
-            'cart_items': cart_item,
-            'tax': tax,
-            'grand_total': grand_total
-        }
-        return render(request, 'store/cart.html', context)
+    context = {
+        'total': total,
+        'quantity': quantity,
+        'cart_items': cart_items,
+        'tax': tax,
+        'grand_total': grand_total
+    }
+    return render(request, 'store/cart.html', context)
