@@ -25,7 +25,7 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home,name='home'),
-    path('cart/', include('carts.urls')),
+    path('store/',include('store.urls')),
     path('cart/', include('carts.urls')),
 
     # ORDERS
