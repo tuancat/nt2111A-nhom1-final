@@ -30,7 +30,7 @@ def add_cart(request, product_id):
     
     try:
         cart = Cart.objects.get(cart_id=_cart_id(request)) # get the cart using the cart_id present in the session
-    except cart.DoesNotExist:
+    except Cart.DoesNotExist:
         cart = Cart.objects.create(
             cart_id = _cart_id(request)
         )
@@ -46,7 +46,7 @@ def add_cart(request, product_id):
         id = []
         for item in cart_item:
             existing_variation = item.variations.all()
-            ex_var_list.append(existing_variation)
+            ex_var_list.append(list(existing_variation))
             id.append(item.id)
         
         print(ex_var_list)    
@@ -63,9 +63,6 @@ def add_cart(request, product_id):
             if len(product_variation) > 0:
                 item.variations.clear()
                 item.variations.add(*product_variation)
-        #         for item in product_variation:
-        #             cart_item.variations.add(item)
-        # # cart_item.quantity += 1 # cart_item.quantity = cart_item.quantity + 1
             item.save()
     else:
         cart_item = CartItem.objects.create(
@@ -76,8 +73,6 @@ def add_cart(request, product_id):
         if len(product_variation) > 0:
             cart_item.variations.clear()
             cart_item.variations.add(*product_variation)
-            # for item in product_variation:
-            #     cart_item.variations.add(item)
         cart_item.save()
     return redirect('cart')
 
@@ -100,7 +95,7 @@ def remove_cart_item(request, product_id):
     return redirect('cart')
 
 
-def cart(request, total=0, quantity=0, cart_item=None):
+def cart(request, total=0, quantity=0, cart_items=None):
     try:
         tax = 0
         grand_total = 0
@@ -125,7 +120,7 @@ def cart(request, total=0, quantity=0, cart_item=None):
 
 
 @login_required(login_url='login')
-def checkout(request, total=0, quantity=0, cart_item=None):
+def checkout(request, total=0, quantity=0, cart_items=None):
     try:
         tax = 0
         grand_total = 0
