@@ -16,7 +16,11 @@ Including another URLconf
 from atexit import register
 from django import views
 from django.contrib import admin
+<<<<<<< HEAD
 from django.urls import path, include
+=======
+from django.urls import path,include
+>>>>>>> origin/main
 from . import views
 from django.conf.urls.static import static
 from django.conf import settings
@@ -25,5 +29,17 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', views.home,name='home'),
+<<<<<<< HEAD
     path('register/', include('register.urls'))
+=======
+    path('store/',include('store.urls')),
+    path('cart/', include('carts.urls')),
+    # ORDERS
+    path('order/',include('orders.urls')),
+    
+>>>>>>> origin/main
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+
+
+

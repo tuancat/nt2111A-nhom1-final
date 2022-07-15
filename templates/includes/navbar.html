@@ -27,33 +27,31 @@
         <div class="container">
     <div class="row align-items-center">
         <div class="col-lg-2 col-md-3 col-6">
-            <a href="./" class="brand-wrap">
-                <img class="logo" src=" {% static './images/logo.png' %}">
+            <a href="{% url 'home' %}" class="brand-wrap">
+                <img class="logo" src=" {% static 'images/logo.png' %}">
             </a> <!-- brand-wrap.// -->
         </div>
         <div class="col-lg col-sm col-md col-6 flex-grow-0">
             <div class="category-wrap dropdown d-inline-block float-right">
-                <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown"> 
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown"> 
                     <i class="fa fa-bars"></i> All category 
                 </button>
                 <div class="dropdown-menu">
-                    <a class="dropdown-item" href="#">Áo thun / sơ mi nam </a>
-                    <a class="dropdown-item" href="#">Áo thun / sơ mi nữ </a>
-                    <a class="dropdown-item" href="#">Quần tây / jean / short nam</a>
-                    <a class="dropdown-item" href="#">Quần tây / jean / short nữ </a>
-                    <a class="dropdown-item" href="#">Balo / túi xách </a>
-                    <a class="dropdown-item" href="#">Phụ kiện thời trang </a> 
+                    <a class="dropdown-item" href="{% url 'store' %}">All Products </a>
+                    {% for category in links %}
+                        <a class="dropdown-item" href="{{ category.get_url }}">{{ category.category_name }}</a>
+                    {% endfor %}
                 </div>
             </div>  <!-- category-wrap.// -->
         </div> <!-- col.// -->
-        <a href="./store.html" class="btn btn-outline-primary">Store</a>
+        <a href="{% url 'store' %}" class="btn btn-outline-success">Store</a>
         <div class="col-lg  col-md-6 col-sm-12 col">
-            <form action="#" class="search">
+            <form action="{% url 'search' %}" class="search" method='GET'>
                 <div class="input-group w-100">
-                    <input type="text" class="form-control" style="width:60%;" placeholder="Search">
+                    <input type="text" class="form-control" style="width:60%;" placeholder="Search" name="keyword">
                     
                     <div class="input-group-append">
-                      <button class="btn btn-primary" type="submit">
+                      <button class="btn btn-success" type="submit">
                         <i class="fa fa-search"></i>
                       </button>
                     </div>
@@ -69,17 +67,14 @@
                                 <a href="./register.html"> Register</a>
                             </div>
                         </div>
-                        <a href="./cart.html" class="widget-header pl-3 ml-3">
+                        <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
                             <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
-                            <span class="badge badge-pill badge-danger notify">0</span>
+                            <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
                         </a>
                     </div> <!-- widgets-wrap.// -->
                 </div> <!-- col.// -->
     </div> <!-- row.// -->
         </div> <!-- container.// -->
     </section> <!-- header-main .// -->
-    
-    
-    
-    
+   
 </header> <!-- section-header.// -->
