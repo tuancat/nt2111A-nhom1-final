@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .forms import RegistrationForm
 from .models import Account
 from django.contrib import messages, auth
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -36,16 +37,24 @@ def login(request):
         email = request.POST['email']
         password = request.POST['password']
 
-        user = auth.authenticate(email=email, password="password")
+        user = auth.authenticate(email=email, password=password)
 
         if user is not None:
             auth.login(request, user)
             return redirect('home')
         else:
-            messages.error(request, 'email hoặc password không đúng')
+            messages.warning(request, 'email hoặc password không đúng')
             return redirect('login')
 
     return render(request, 'accounts/login.html')
 
+
+@login_required(login_url = 'login')
 def logout(request):
-    return
+    auth.logout(request)
+    messages.success(request, 'Bạn đã đăng xuất')
+    return redirect('login')
+
+
+
+

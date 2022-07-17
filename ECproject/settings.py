@@ -141,5 +141,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from django.contrib.messages import constants as messages
 MESSAGE_TAGES = {
-    messages.ERROR: 'danger',
+    messages.WARNING: 'danger',
 }
