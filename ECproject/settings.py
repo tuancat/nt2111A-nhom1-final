@@ -67,12 +67,17 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'category.context_processors.menu_links',
+                'carts.context_processors.counter',
+                
+
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'ECproject.wsgi.application'
+AUTH_USER_MODEL = 'accounts.Account'
 
 AUTH_USER_MODEL = 'accounts.Account'
 
@@ -81,8 +86,11 @@ AUTH_USER_MODEL = 'accounts.Account'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'ecproject',
+        'HOST':'localhost',
+        'USER':'root',
+        'PASSWORD':'233NganNguyen*'
     }
 }
 
