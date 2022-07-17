@@ -9,9 +9,8 @@ class RegistrationForm(ModelForm):
     last_name = forms.CharField(max_length = 100, help_text = 'Last Name')
     email = forms.EmailField(max_length = 150, help_text = 'Email')
     phone_number = forms.CharField(max_length = 11, help_text = 'Phone Number')
-    password1 = forms.CharField(max_length = 100, help_text = 'Create password')
-    password2 = forms.CharField(max_length = 100, help_text = 'Repeat password')
-
+    confirm_password = forms.CharField(max_length=100, widget=forms.PasswordInput())
+    password = forms.CharField(max_length=100, widget=forms.PasswordInput())
     class Meta:
         model = Account
-        fields = ('username', 'first_name', 'last_name', 'email', 'phone_number', 'password1', 'password2')
+        fields = ['username', 'first_name', 'last_name', 'email', 'phone_number', 'password', 'confirm_password']
