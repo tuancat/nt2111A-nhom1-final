@@ -75,6 +75,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'ECproject.wsgi.application'
+AUTH_USER_MODEL = 'accounts.Account'
 
 
 # Database
