@@ -1,10 +1,14 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from carts.models import CartItem
 from .forms import OrderForm
 import datetime
 from .models import Order, Payment, OrderProduct
-import json
+
+from store.models import Product
+from django.template.loader import render_to_string
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.mail import EmailMessage
 
 
 # Create your views here.
@@ -45,14 +49,34 @@ def payments(request):
         
 
 # Giảm số lượng sản phẩm đã bán
+        product = Product.objects.get(id=item.product_id)
+        product.stock -= item.quantity
+        product.save()
 
 # Xóa giỏ hàng
+    CartItem.objects.filter(user=request.user).delete()
+
 
 # Gửi đơn hàng vào mail của khách
+    mail_subject = 'Cảm ơn bạn đã đặt hàng của chúng tôi'
+    message = render_to_string('account/order_received_email.html', {
+        'user': request.user,
+        'order': order,
+    })
+
+    to_email = request.user.email
+    send_email = EmailMessage(mail_subject, message, to=[to_email])
+    send_email.send()
 
 # Gửi số đơn hàng và giao dịch id
+    data = {
+        'orders_number': order.order_number,
+        'transID': payment.payment_id,
+    }
 
-    return render(request, 'orders/payments.html')
+    return JsonResponse(data)
+
+   # return render(request, 'orders/payments.html')
 
 
 def place_order(request, total=0, quantity=0):
@@ -113,3 +137,29 @@ def place_order(request, total=0, quantity=0):
             return render(request, 'orders/payments.html', context)
     else:
         return redirect('checkout')
+
+
+def order_complete(request):
+    order_number = request.GET.get('order_number')
+    trsnsID = request.GET.get('payment_id')
+
+    try:
+        order = Order.objects.get(order_number=order_number, is_ordered=True)
+        ordered_products = OrderProduct.objects.filter(order_id=order.id)
+
+        subtotal = 0
+        for i in ordered_products:
+            subtotal += i.product_price * i.quantity
+
+        context = {
+
+            'order': order,
+            'ordered_products': ordered_products,
+            'order_number': order.order_number,
+            'payment':payment,
+            'subtotal': subtotal,
+        }
+
+        return render(request, 'orders/order_complete.html', context)
+    except (Payment.DoesNotExist,Order.DoesNotExist):
+        return redirect('home')

@@ -27,6 +27,8 @@ class Migration(migrations.Migration):
                 ('quantity', models.IntegerField()),
                 ('is_active', models.BooleanField(default=True)),
                 ('cart', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='carts.cart')),
+                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='store.product')),
+                ('variations', models.ManyToManyField(blank=True, to='store.Variation')),
             ],
         ),
     ]
