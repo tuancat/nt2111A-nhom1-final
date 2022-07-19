@@ -57,10 +57,10 @@ def register(request):
 
 def login(request):
     if request.method == "POST":
-        email = request.POST.get('email', "default value")
+        email = request.POST.get('email')
         password = request.POST.get('password')
 
-        user = auth.authenticate(email = email, password = password)
+        user = auth.authenticate(email=email, password=password)
 
         if user is not None:
             try:
@@ -76,10 +76,10 @@ def login(request):
             except:
                 pass
             auth.login(request, user)
-            messages.success(request, 'You are now logged in.')
+            messages.success(request, 'Đăng nhập thành công.')
             return redirect('dashboard')
         else:
-            messages.error(request, 'Invalid login credentials')
+            messages.warning(request, 'Sai username hoặc password')
             return redirect('login')
     return render(request, 'accounts/login.html')
 
