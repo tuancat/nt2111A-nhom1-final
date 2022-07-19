@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-=======
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
->>>>>>> remotes/origin/phuocNguyen
 from carts.models import CartItem
 from .forms import OrderForm
 import datetime
