@@ -9,28 +9,28 @@
     <!-- ============================ COMPONENT 1 ================================= -->
 
     <div class="row">
-        <h4 class="text-center" mb-10>Thông tin đơn hàng và thanh toán</h4>
+        
         <aside class="col-lg-8">
     
         <div class="card">
             <h5 class="card-header">Địa chỉ nhận hàng</h5>
             <div class="card-body">
               
-              <p class="card-text" mb-0>{{order.full_name}}</p>
-              <p class="card-text" mb-0>{{order.full_address}}</p>
+              <p class="card-text" mb-0>Tên người nhận: {{order.full_name}}</p>
+              <p class="card-text" mb-0>Địa chỉ: {{order.full_address}}</p>
               <p class="card-text" mb-0>{{order.city}}, {{order.state}} </p>
               <p class="card-text" mb-0>{{order.country}} </p>
-              <p class="card-text" mb-0>{{order.email}} </p>
-              <p class="card-text" mb-0>{{order.phone}} </p>
+              <p class="card-text" mb-0>Email: {{order.email}} </p>
+              <p class="card-text" mb-0>Số điện thoại: {{order.phone}} </p>
               {% if order.order_note %}
-                <b> Order Note: </b> {{order.order_note}}
+                <b> Ghi chú: </b> {{order.order_note}}
               {% endif%}
             </div>
         </div>
         <div class="card">
             <h5 class="card-header">Phương thức thanh toán</h5>
             <div class="card-body">
-                <p class="card-text">Thanh toán khi nhận hàng</p>
+                <p class="card-text">Thanh toán khi nhận hàng (COD)</p>
             </div>
         </div>
         <div class="card">
@@ -70,8 +70,8 @@
                         </td>
                         <td> 
                             <div class="price-wrap"> 
-                                <var class="price">$ {{ cart_item.sub_total }}</var> 
-                                <small class="text-muted"> $ {{ cart_item.product.price }} each </small> 
+                                <var class="price">VND {{ cart_item.sub_total }}</var> 
+                                <small class="text-muted">VND {{ cart_item.product.price }} each </small> 
                             </div> <!-- price-wrap .// -->
                         </td>
                         
@@ -92,21 +92,21 @@
             <div class="card-body">
                 <dl class="dlist-align">
                   <dt>Total price:</dt>
-                  <dd class="text-right">$ {{ total }}</dd>
+                  <dd class="text-right">VND {{ total }}</dd>
                 </dl>
                 <dl class="dlist-align">
                   <dt>Tax:</dt>
-                  <dd class="text-right"> $ {{ tax }}</dd>
+                  <dd class="text-right">VND {{ tax }}</dd>
                 </dl>
                 <dl class="dlist-align">
                   <dt>Grand total:</dt>
-                  <dd class="text-right text-dark b"><strong>$ {{ grand_total }}</strong></dd>
+                  <dd class="text-right text-dark b"><strong>VND {{ grand_total }}</strong></dd>
                 </dl>
                 <hr>
                 <p class="text-center mb-3">
-                    <img src="{% static './images/misc/payments.png' %}" height="26">
+                    <img src="{% static './images/misc/cash.png' %}" height="26">
                 </p>
-                <a href="{% url 'checkout' %}" class="btn btn-primary btn-block"> Make Payment </a>
+                <a href="{% url 'payments' %}" class="btn btn-primary btn-block">Thanh toán COD</a>
                 
             </div> <!-- card-body.// -->
             </div> <!-- card.// -->
