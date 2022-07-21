@@ -35,7 +35,6 @@ def register(request):
             message = render_to_string('accounts/account_verification_email.html', {
                 'user': user,
                 'domain': current_site,
-                #'uid': urlsafe_base64_decode(force_bytes(user.pk)),
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'token': default_token_generator.make_token(user),
             })
