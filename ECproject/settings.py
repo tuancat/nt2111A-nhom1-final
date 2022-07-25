@@ -41,7 +41,7 @@ INSTALLED_APPS = [
     'store',
     'carts',
     'accounts',
-    'orders'
+    'orders',
 ]
 
 MIDDLEWARE = [
@@ -88,7 +88,7 @@ DATABASES = {
         'NAME': 'ecproject',
         'HOST':'localhost',
         'USER':'root',
-        'PASSWORD':'NhanLeno@138589'
+        'PASSWORD':'thanhxuan_130789'
     }
 }
 
@@ -143,5 +143,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from django.contrib.messages import constants as messages
 MESSAGE_TAGES = {
-    messages.WARNING: 'danger',
+    messages.ERROR: 'danger',
 }
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_HOST_USER = 'thanhxuan03071989@gmail.com'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_USE_TLS = True

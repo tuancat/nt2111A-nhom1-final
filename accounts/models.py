@@ -1,5 +1,8 @@
 from distutils.archive_util import make_zipfile
+from distutils.command.upload import upload
 from re import L
+from statistics import mode
+from unittest.util import _MAX_LENGTH
 from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 
@@ -50,8 +53,7 @@ class Account(AbstractBaseUser):
     last_login = models.DateTimeField(auto_now_add=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=False)
+    is_active = models.BooleanField(default=True)
     is_supperadmin = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
@@ -67,3 +69,18 @@ class Account(AbstractBaseUser):
     
     def has_module_perms(self, add_label):
         return True
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(Account, on_delete = models.CASCADE)
+    address_line_1 = models.CharField(blank = True, max_length = 100)
+    address_line_2 = models.CharField(blank = True, max_length = 100)
+    profile_picture = models.ImageField(blank = True, upload_to = 'userprofile')
+    city = models.CharField(blank = True, max_length = 20)
+    state = models.CharField(blank = True, max_length = 20)
+    country = models.CharField(blank = True, max_length = 20)
+
+    def __str__(self):
+        return super.user.first_name
+    
+    def full_address(self):
+        return f'{self.address_line_1} {self.address_line_2}'
