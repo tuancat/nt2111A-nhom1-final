@@ -1,4 +1,3 @@
-import profile
 from django.shortcuts import get_object_or_404, render, redirect
 from matplotlib.style import use
 from .forms import RegistrationForm, UserForm, UserProfileForm
@@ -7,8 +6,6 @@ from orders.models import Order
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from carts.models import Cart, CartItem
-from carts.views import _cart_id
 
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
@@ -37,7 +34,13 @@ def register(request):
             user.phone_number = phone_number
             user.save()
 
+            profile = UserProfile()
+            profile.user_id =user.id
+            profile.profile_picture='default/default-user.jpg'
+            profile.save()
+
             current_site = get_current_site(request)
+            '''
             mail_subject = "Please activate your account"
             message = render_to_string('accounts/account_verification_email.html', {
                 'user': user,
@@ -49,24 +52,22 @@ def register(request):
             to_email = email
             send_email = EmailMessage(mail_subject, message, to = [to_email])
             send_email.send()
-            return redirect('/accounts/login/?command = verification&email='+email)
-            #messages.success(request, 'Your account has been created')
-            #return redirect('register')
+            '''
+            return redirect('/accounts/login/?command =verification&email='+email)
+         
     else:
         form = RegistrationForm()
     context = {
         'form': form,
     }
-
-
     return render(request,'accounts/register.html',context)
 
 def login(request):
-    if request.method == "POST":
-        email = request.POST.get('email')
-        password = request.POST.get('password')
+    if request.method == 'POST':
+        email = request.POST['email']
+        password = request.POST['password']
 
-        user = auth.authenticate(email=email, password=password)
+        user = auth.authenticate(email = email, password = password)
 
         if user is not None:
             try:
@@ -74,18 +75,46 @@ def login(request):
                 is_cart_item_exists = CartItem.objects.filter(cart=cart).exists()
                 if is_cart_item_exists:
                     cart_item = CartItem.objects.filter(cart=cart)
-
+                    product_variation = []
                     for item in cart_item:
-                        item.user = user
-                        item.save()
-
+                        variation = item.variation.all()
+                        product_variation.append(list(variation))
+                    cart_item = CartItem.objects.filter(user=user)
+                    ex_var_list = []
+                    id = []
+                    for item in cart_item:
+                        existing_variation = item.variations.all()
+                        ex_var_list.append(list(existing_variation))
+                        id.append(item.id)
+                    for pr in product_variation:
+                        if pr in ex_var_list:
+                            index = ex_var_list.index(pr)
+                            item_id = id[index]
+                            item = CartItem.objects.get(id=item_id)
+                            item.quantity += 1
+                            item.user = user
+                            item.save()
+                        else:
+                            cart_item = CartItem.objects.filter(cart=cart)
+                            for item in cart_item:
+                                item.user = user
+                                item.save()
             except:
                 pass
             auth.login(request, user)
-            messages.success(request, 'Đăng nhập thành công.')
-            return redirect('dashboard')
+            messages.success(request, 'You are now logged in.')
+            url = request.META.get('HTTP_REFERER')
+            try:
+                query = requests.utils.urlparse(url).query
+                params = dict(x.split('=') for x in query.split('&'))
+                if 'next' in params:
+                    nextPage = params['next']
+                    return redirect(nextPage)
+                
+            except:
+                return redirect('dashboard')
         else:
-            messages.warning(request, 'Sai username hoặc password')
+            messages.error(request, 'Invalid login credentials')
             return redirect('login')
     return render(request, 'accounts/login.html')
 
@@ -113,7 +142,7 @@ def activate(request, uidb64, token):
 
 @login_required(login_url = 'login')
 def dashboard(request):
-    orders = Order.objects.order_by('-created_at').filter(user_id = request.user.id, is_ordered = True)
+    orders = Order.objects.order_by('-create_at').filter(user_id = request.user.id, is_ordered = True)
     orders_count = orders.count()
     context = {
         'orders_count': orders_count,
@@ -121,8 +150,8 @@ def dashboard(request):
     return render(request, 'accounts/dashboard.html', context)
 
 def forgotPassword(request):
-    if request.method == "POST":
-        email = request.POST["email"]
+    if request.method == 'POST':
+        email = request.POST['email']
         if Account.objects.filter(email = email).exists():
             user = Account.objects.get(email__exact = email)
 
@@ -163,7 +192,7 @@ def resetpassword_validate(request, uidb64, token):
         return redirect('login')
 
 def resetPassword(request):
-    if request.method == "POST":
+    if request.method == 'POST':
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
@@ -180,18 +209,18 @@ def resetPassword(request):
             return redirect('resetPassword')
     else:
         return render(request, 'accounts/resetPassword.html')
-
+@login_required(login_url = 'login')
 def my_orders(request):
-    orders = Order.objects.filter(user = request.user, is_ordered = True).order_by('-created_at')
+    orders = Order.objects.filter(user = request.user, is_ordered = True).order_by('-create_at')
     context = {
         'orders': orders,
     }
-    return render(request, 'accounts/my_orders.html')
-
+    return render(request, 'accounts/my_orders.html', context)
+@login_required(login_url = 'login')
 def edit_profile(request):
-    userprofile = get_object_or_404(UserProfile, user = request.user)
+    userprofile = get_object_or_404(UserProfile,user = request.user)
     if request.method == 'POST':
-        user_form = UserForm(request.POST, instance = request.user)
+        user_form = UserForm(request.POST,instance = request.user)
         profile_form = UserProfileForm(request.POST, request.FILES, instance=userprofile)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
@@ -204,9 +233,9 @@ def edit_profile(request):
     context = {
         'user_form': user_form,
         'profile_form': profile_form,
+        'userprofile' : userprofile,
     }
-
-    return render(request, 'accounts/edit_profile.html')
+    return render(request, 'accounts/edit_profile.html', context)
 
 @login_required(login_url = 'login')
 def change_password(request):
@@ -232,5 +261,7 @@ def change_password(request):
         else:
             messages.error(request, "Password does not match!")
             return redirect('change_password')
-
     return render(request, 'accounts/change_password.html')
+
+def order_detail(request,order_id):
+    return render(request,'accounts/order_detail.html')

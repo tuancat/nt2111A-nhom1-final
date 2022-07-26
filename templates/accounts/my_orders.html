@@ -1,9 +1,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
 <section class = "section-content padding-y bg" style = "min-height: 84vh">
-
 {% include 'includes/alerts.html' %}    
 
 <div class = "container">
@@ -30,14 +28,15 @@
                       </tr>
                     </thead>
                     <tbody>
-                        {% for order in orders %}
+                      {% for order in orders %}
                       <tr>
                         <th scope="row">{{order.order_number}}</th>
                         <td>{{order.full_name}}</td>
                         <td>{{order.phone}}</td>
-                        <td>${{order.order_total}}</td>
+                        <td>đ{{order.order_total}}</td>
                         <td>{{order.created_at}}</td>
                       </tr>
+                      {% endfor %}
                     </tbody>
                   </table>
             </div>
@@ -49,4 +48,4 @@
 </div>
 
 </section>
-{% endblock%}
+{% endblock %}
