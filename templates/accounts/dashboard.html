@@ -20,15 +20,19 @@
                         <div class = "card-body">
                             <h5 class = "card-title">Total Orders</h5>
                             <h4>{{orders_count}}</h4>
-                            <a href = "">View Orders</a>
+                            <a href = "{% url 'my_orders' %}">View Orders</a>
                         </div>
                     </div>
                 </div>
                 <div class = "col-md-6">
-                    <div class = "card" style = "text-align: center;">
-                        <img src = "https://www.w3schools.com/howto/howto_css_image_avatar.asp" alt = "User Profile Picture" width = "50" height = "50" style = "border-radius: 50%;">
-                        <p class = "mb-0">{{user.email}}</p>
-                        <p>{{user.phone_number}}</p>
+                    <div class = "card">
+                        <div class="text-center">
+                            <img src = "{{userprofile.profile_picture.url}}" alt = "User Profile Picture" width = "90" height = "90" class="rounded-circle">
+                        </div>
+                        <div class="text-center">
+                            <p class = "mb-0">{{user.email}}</p>
+                            <p>{{user.phone_number}}</p>
+                        </div>
                     </div>
                 </div>
             </div>

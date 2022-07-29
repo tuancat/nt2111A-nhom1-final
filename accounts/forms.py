@@ -47,47 +47,22 @@ class RegistrationForm(forms.ModelForm):
                 "Password does not match!"
             )
 class UserForm(forms.ModelForm):
-    first_name = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Enter First Name',
-        'class'         : 'form-control',
-    }))
-
-    last_name = forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Enter Last Name',
-        'class'         : 'form-control',
-    }))
-
-    phone_number = forms.CharField(widget=forms.NumberInput(attrs={
-        'placeholder': 'Enter Phone Number',
-        'class'         : 'form-control',
-    }))
     class Meta:
         model = Account
         fields = ('first_name', 'last_name', 'phone_number')
+    
+    def __init__(self, *args, **kwargs):
+        super(UserForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'
+
 class UserProfileForm(forms.ModelForm):
     profile_picture = forms.ImageField(required=False, error_messages={'invalid': ("Image files only")}, widget=forms.FileInput)
-    address_line_1= forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Enter address_line_1',
-        'class'         : 'form-control',
-    }))
-    address_line_2= forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Enter address_line_2',
-        'class'         : 'form-control',
-    }))
-
-    city= forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Enter City',
-        'class'         : 'form-control',
-    }))
-    state= forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Enter State',
-        'class'         : 'form-control',
-    }))
-    country= forms.CharField(widget=forms.TextInput(attrs={
-        'placeholder': 'Enter Country',
-        'class'         : 'form-control',
-    }))
-    
     class Meta:
         model = UserProfile
         fields = ('address_line_1', 'address_line_2', 'city', 'state', 'country', 'profile_picture')
+    
+    def __init__(self, *args, **kwargs):
+        super(UserProfileForm, self).__init__(*args, **kwargs)
+        for field in self.fields:
+            self.fields[field].widget.attrs['class'] = 'form-control'

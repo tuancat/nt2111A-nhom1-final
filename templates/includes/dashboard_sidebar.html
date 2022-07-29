@@ -6,5 +6,5 @@
         <a class = "list-group-item {% if '/change_password/' in request.path %}active{% endif %}" href = "{% url 'change_password' %}"> Change Password </a>
     </ul>
     <br>
-    <a class = "btn btn-light btn-block" href = "{% url 'logout' %}"><i class="fa fa-power-off"></i><span class = "text">Log out</span></a>
+    <a class = "btn btn-light btn-block" href = "{% url 'logout' %}"><i class="fa fa-power-off text-danger"></i><span class = "text-danger"> Log out </span></a>
 </aside>

@@ -102,7 +102,7 @@ def login(request):
             except:
                 pass
             auth.login(request, user)
-            messages.success(request, 'You are now logged in.')
+            messages.success(request, 'Đăng nhập thành công')
             url = request.META.get('HTTP_REFERER')
             try:
                 query = requests.utils.urlparse(url).query
@@ -114,14 +114,14 @@ def login(request):
             except:
                 return redirect('dashboard')
         else:
-            messages.error(request, 'Invalid login credentials')
+            messages.error(request, 'Sai username hoặc password')
             return redirect('login')
     return render(request, 'accounts/login.html')
 
 @login_required(login_url = 'login')
 def logout(request):
     auth.logout(request)
-    messages.success(request, 'You are logged out.')
+    messages.success(request, 'Bạn đã đăng xuất')
     return redirect('login')
 
 def activate(request, uidb64, token):
@@ -142,10 +142,12 @@ def activate(request, uidb64, token):
 
 @login_required(login_url = 'login')
 def dashboard(request):
+    userprofile = get_object_or_404(UserProfile,user = request.user)
     orders = Order.objects.order_by('-create_at').filter(user_id = request.user.id, is_ordered = True)
     orders_count = orders.count()
     context = {
         'orders_count': orders_count,
+        'userprofile': userprofile,
     }
     return render(request, 'accounts/dashboard.html', context)
 
@@ -216,6 +218,7 @@ def my_orders(request):
         'orders': orders,
     }
     return render(request, 'accounts/my_orders.html', context)
+
 @login_required(login_url = 'login')
 def edit_profile(request):
     userprofile = get_object_or_404(UserProfile,user = request.user)

@@ -66,7 +66,7 @@
                         </div>
                         {% else %}
                         <div class="widget-header">
-                            <small class="title text-muted">Welcome {{user.first_name}}</small>
+                            <small class="title text-primary">Welcome {{user.first_name}}</small>
                             <div> 
                                 <a href="{% url 'dashboard' %}">Dashboard</a> <span class="dark-transp"> | </span>
                                 <a href="{% url 'logout' %}"> Logout</a>
@@ -74,7 +74,7 @@
                         </div>
                         {% endif %}
                         <a href="{% url 'cart' %}" class="widget-header pl-3 ml-3">
-                            <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart"></i></div>
+                            <div class="icon icon-sm rounded-circle border"><i class="fa fa-shopping-cart text-success"></i></div>
                             <span class="badge badge-pill badge-danger notify">{{cart_count}}</span>
                         </a>
                     </div> <!-- widgets-wrap.// -->
