@@ -80,7 +80,7 @@ class UserProfile(models.Model):
     country = models.CharField(blank = True, max_length = 20)
 
     def __str__(self):
-        return self.user.first_name, self.profile_picture
+        return self.user.first_name
     
     def full_address(self):
         return f'{self.address_line_1} {self.address_line_2}'
