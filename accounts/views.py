@@ -17,6 +17,7 @@ from django.core.mail import EmailMessage
 from carts.views import _cart_id
 from carts.models import Cart, CartItem
 import requests
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -40,6 +41,7 @@ def register(request):
             profile.save()
 
             current_site = get_current_site(request)
+            
             mail_subject = "Please activate your account"
             message = render_to_string('accounts/account_verification_email.html', {
                 'user': user,
@@ -51,6 +53,7 @@ def register(request):
             to_email = email
             send_email = EmailMessage(mail_subject, message, to = [to_email])
             send_email.send()
+            
             return redirect('/accounts/login/?command =verification&email='+email)
          
     else:
@@ -100,7 +103,7 @@ def login(request):
             except:
                 pass
             auth.login(request, user)
-            messages.success(request, 'You are now logged in.')
+            messages.success(request, 'Đăng nhập thành công')
             url = request.META.get('HTTP_REFERER')
             try:
                 query = requests.utils.urlparse(url).query
@@ -112,7 +115,7 @@ def login(request):
             except:
                 return redirect('dashboard')
         else:
-            messages.error(request, 'Invalid login credentials')
+            messages.error(request, 'Sai username hoặc password')
             return redirect('login')
     return render(request, 'accounts/login.html')
 
@@ -132,7 +135,7 @@ def activate(request, uidb64, token):
     if user is not None and default_token_generator.check_token(user, token):
         user.is_active = True
         user.save()
-        messages.success(request, 'Congratulations! Your account is activated.')
+        messages.success(request, 'Chúc mừng bạn, tài khoản của bạn đã được cập nhật.')
         return redirect('login')
     else:
         messages.error(request, 'Invalid activation link')
@@ -140,10 +143,12 @@ def activate(request, uidb64, token):
 
 @login_required(login_url = 'login')
 def dashboard(request):
+    userprofile = get_object_or_404(UserProfile,user = request.user)
     orders = Order.objects.order_by('-create_at').filter(user_id = request.user.id, is_ordered = True)
     orders_count = orders.count()
     context = {
         'orders_count': orders_count,
+        'userprofile': userprofile,
     }
     return render(request, 'accounts/dashboard.html', context)
 
@@ -166,11 +171,11 @@ def forgotPassword(request):
             send_email = EmailMessage(mail_subject, message, to = [to_email])
             send_email.send()
 
-            messages.success(request, 'Password reset email has been sent to your email address.')
+            messages.success(request, 'Bạn vui lòng kiểm tra email để lấy lại mật khẩu.')
             return redirect('login')
 
         else:
-            messages.error(request, 'Account does not exist!')
+            messages.error(request, 'Tài khoản không tồn tại')
             return redirect('forgotPassword')
     return render(request, 'accounts/forgotPassword.html')
 
@@ -183,10 +188,10 @@ def resetpassword_validate(request, uidb64, token):
     
     if user is not None and default_token_generator.check_token(user, token):
         request.session['uid'] = uid
-        messages.success(request, 'Please reset your password')
+        messages.success(request, 'Vui lòng đặt lại mật khẩu của bạn.')
         return redirect('resetPassword')
     else:
-        messages.error(request, 'This link has been expired.')
+        messages.error(request, 'Linh này đã hết hạn!')
         return redirect('login')
 
 def resetPassword(request):
@@ -199,11 +204,11 @@ def resetPassword(request):
             user = Account.objects.get(pk = uid)
             user.set_password(password)
             user.save()
-            messages.success(request, "Password reset successfully")
+            messages.success(request, "Đặt lại mật khẩu thành công!")
             return redirect('login')
 
         else:
-            messages.error(request, "Password do not match")
+            messages.error(request, "Mật khẩu không trùng khớp")
             return redirect('resetPassword')
     else:
         return render(request, 'accounts/resetPassword.html')
@@ -223,7 +228,7 @@ def edit_profile(request):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
-            messages.success(request, 'Your profile has been updated.')
+            messages.success(request, 'Đã cập nhật thông tin')
             return redirect('edit_profile')
     else:
         user_form = UserForm(instance = request.user)
@@ -249,15 +254,15 @@ def change_password(request):
             if success:
                 user.set_password(new_password)
                 user.save()
-                messages.success(request, "Password updated successfully")
+                messages.success(request, "Mật khẩu đã cập nhật thành công.")
                 return redirect('change_password')
 
             else:
-                messages.error(request, "Please enter valid current password")
+                messages.error(request, "Hãy nhập mật khẩu hiện tại.")
                 return redirect('change_password')
         
         else:
-            messages.error(request, "Password does not match!")
+            messages.error(request, "Mật khẩu không khớp")
             return redirect('change_password')
     return render(request, 'accounts/change_password.html')
 @login_required(login_url = 'login')
@@ -270,7 +275,7 @@ def order_detail(request, order_id):
     context = {
         'order_detail': order_detail,
         'order'         : order,
-        'subtotal'      : subtotal
+        'subtotal'      : subtotal,
            }
     
     return render(request,'accounts/order_detail.html',context)

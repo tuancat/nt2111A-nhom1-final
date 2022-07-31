@@ -1,10 +1,18 @@
 {% autoescape off %}
 
 Hi {{user.first_name}},
-
+Cảm ơn bạn đã đăng ký thành viên trên trang của chúng tôi.
+Vui lòng click vào link bên dưới để xác nhận đăng ký của bạn
 Please click on below link to confirm your registration.
+
 http://{{domain}}{% url 'activate' uidb64=uid token=token %}
 
+
+Nếu đây không phải là bạn đăng ký, vui lòng bỏ qua email này.
 If you think it's not you, please ignore this email.
+
+Shop thời trang dành cho bạn.
+Xin cảm ơn!
+
 
 {% endautoescape %}

@@ -37,9 +37,9 @@
                 <hr>
                     <div class="row">
                         <div class="item-option-select">
-                            <h6>Choose Color</h6>
+                            <h6>Chọn màu sắc</h6>
                             <select name="color" class="form-control" required>
-                                <option value=""disabled selected>Select</option>
+                                <option value=""disabled selected>Chọn</option>
                                 {% for i in single_product.variation_set.colors %}
                                 <option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst }}</option>
                                 {% endfor %}
@@ -48,9 +48,9 @@
                     </div>
                     <div class="row">
                         <div class="item-option-select">
-                            <h6>Select Size</h6>
+                            <h6>Chọn size</h6>
                             <select name="size" class="form-control">
-                                <option value=""disabled selected>Select</option>
+                                <option value=""disabled selected>Chọn</option>
                                 {% for i in single_product.variation_set.sizes %}
                                 <option value="{{ i.variation_value | lower }}">{{ i.variation_value | capfirst }}</option>
                                 {% endfor %}
@@ -59,9 +59,9 @@
                     </div>
                     <hr>
                     {% if single_product.stock <= 0 %}
-                      <h5 class="text-danger">Out of Stock</h5>
+                      <h5 class="text-danger">Hết hàng</h5>
                     {% else %}
-                      <button type ="submit" class="btn  btn-primary"> <span class="text">Add to cart</span> <i class="fas fa-shopping-cart"></i>  </button>
+                      <button type ="submit" class="btn  btn-primary"> <span class="text">Thêm vào giỏ</span> <i class="fas fa-shopping-cart"></i>  </button>
                     {% endif %}
                 </article> <!-- product-info-aside .// -->
             </form>
@@ -77,10 +77,10 @@
             
             <form action =" {% url 'submit_review' single_product.id %}" method="POST">
                 {% csrf_token %}
-                <h5>Write Your Review</h5>
+                <h5>Hãy viết đánh giá của bạn</h5>
                 {{ single_product.averageReview }}
                 <div>
-                   <label>How do you rate for this?</label>
+                   <label>Bạn đánh giá mấy sao cho sản phẩm này?</label>
                     <br>
                     <div class="rate">
                         <input type="radio" name="rating" id="rating10" value="5" required ><label for="rating10" title="5"></label>
@@ -95,27 +95,27 @@
                         <input type="radio" name="rating" id="rating1" value="0.5" required ><label for="rating1" title="0.5" class="half"></label>
                     </div>
                     <br>
-                    Review Title:
+                    Tiêu đề:
                     <input type="text" class="form-control" name="subject">
                     <br>
-                    Review:
+                    Nội dung:
                     <textarea name="review" row="4" class="form-control"></textarea>
                     <br>
                     {% if user.is_authenticated %}
                         {% if orderproduct %}
                             <input type="submit" value="Submit Review" class="btn btn-primary">
                         {% else %}
-                            <p>You must purchase this product to post a review.</p>
+                            <p>Bạn phải mua sản phẩm này trước khi đánh giá</p>
                         {% endif %}
                     {% else %}
-                    <p>You must be logged in to post a review.<span><a href="{% url 'login' %}">Login now</a></span></p>
+                    <p>Bạn phải đăng nhập để đánh giá sản phẩm.<span><a href="{% url 'login' %}">Login now</a></span></p>
                     {% endif %}
                 </div>
 {% include 'includes/alerts.html' %}    
             </form>
     <br>
     <header class="section-heading">
-        <h3>Customer Reviews </h3> 
+        <h3>Đánh giá của khách hàng</h3> 
         <div class="rating-star">
             <span>
                 <i class="fa fa-star{% if single_product.averageReview < 0.5 %}-o{% elif single_product.averageReview >= 0.5 and single_product.averageReview < 1 %}-half-o {% endif %}" aria-hidden="true"></i>

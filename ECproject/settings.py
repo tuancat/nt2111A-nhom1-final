@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -67,10 +68,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'category.context_processors.menu_links',
                 'carts.context_processors.counter',
-                
-
+				'category.context_processors.menu_links',
             ],
         },
     },
@@ -88,7 +87,7 @@ DATABASES = {
         'NAME': 'ecproject',
         'HOST':'localhost',
         'USER':'root',
-        'PASSWORD':'thanhxuan_130789'
+        'PASSWORD':'NhanLeno@138589'
     }
 }
 
@@ -135,19 +134,27 @@ STATICFILES_DIRS = [
 
 #media files configuration
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR /'media'
+#MEDIA_ROOT = BASE_DIR /'media'
+MEDIA_ROOT = os.path.join(BASE_DIR /'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 from django.contrib.messages import constants as messages
-MESSAGE_TAGES = {
+MESSAGE_TAGS = {
     messages.ERROR: 'danger',
+    messages.WARNING: 'warning',
+    messages.INFO: 'info',
+    messages.SUCCESS: 'success',
+    messages.DEBUG: 'secondary'
 }
 
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.mailtrap.io'
 EMAIL_HOST_USER = 'c5f4f4b57c66b6'
 EMAIL_HOST_PASSWORD = '303fef87f47691'
 EMAIL_PORT = '2525'
+
+
 USE_THOUSAND_SEPARATOR = True
