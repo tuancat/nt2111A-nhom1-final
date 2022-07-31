@@ -121,7 +121,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -146,8 +146,8 @@ MESSAGE_TAGES = {
     messages.ERROR: 'danger',
 }
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'thanhxuan03071989@gmail.com'
-EMAIL_HOST_PASSWORD = ''
-EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = 'c5f4f4b57c66b6'
+EMAIL_HOST_PASSWORD = '303fef87f47691'
+EMAIL_PORT = '2525'
+USE_THOUSAND_SEPARATOR = True

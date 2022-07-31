@@ -4,7 +4,7 @@ from carts.models import CartItem, Cart
 from .forms import OrderForm
 import datetime
 from .models import Order, Payment, OrderProduct
-from carts.views import checkout, _cart_id
+from carts.views import checkout
 
 from store.models import Product
 from django.template.loader import render_to_string
@@ -14,49 +14,7 @@ import json
 from accounts.models import Account
 
 
-# Create your views here.
 
-def payments(request):
-    order = Order.objects.filter(user=request.user,order_number= order_number)
-#Chuyển tất cả số lượng hàng trong giỏ hàng vào table Order Product
-    cart_items = CartItem.objects.filter(user=request.user)
-    for item in cart_items:
-        orderproduct = OrderProduct()
-        orderproduct.order_id = order.id
-        orderproduct.user_id = request.user.id
-        orderproduct.product_id = item.product_id
-        orderproduct.quantity = item.quantity
-        orderproduct.product_price = item.product.price
-        orderproduct.ordered = True
-        orderproduct.save()
-
-        cart_items = CartItem.objects.get(id=item.id)
-        product_variation = cart_items.variations.all()
-        orderproduct = OrderProduct.objects.get(id=orderproduct.id)
-        orderproduct.variations.set(product_variation)
-        orderproduct.save()
-        
-
-# Giảm số lượng sản phẩm đã bán
-        product = Product.objects.get(id=item.product_id)
-        product.stock -= item.quantity
-        product.save()
-
-# Xóa giỏ hàng
-    CartItem.objects.filter(user=request.user).delete()
-
-
-# Gửi đơn hàng vào mail của khách
-    mail_subject = 'Cảm ơn bạn đã đặt hàng của chúng tôi'
-    message = render_to_string('orders/order_received_email.html', {
-        'user': request.user,
-        'order': order,
-    })
-
-    to_email = request.user.email
-    send_email = EmailMessage(mail_subject, message, to=[to_email])
-    send_email.send()
-    return render(request, 'orders/payments.html')
 
 def place_order(request, total=0, quantity=0,):
     current_user = request.user
@@ -113,16 +71,47 @@ def place_order(request, total=0, quantity=0,):
                 'total': total,
                 'tax': tax,
                 'grand_total': grand_total,
-                'order_number': order_number
+                'order_number': order_number,
             }
-            return render (request,'orders/payments.html')
+            return render (request,'orders/payments.html', context)
     else:
         return redirect('checkout')
 
 
 def order_complete(request):
-    order_number = request.GET.get('order_number')
-    order = Order.objects.get(order_number=order_number, is_ordered=True)
+    #order_number = request.GET.get('order_number')
+    order = Order.objects.get(order_number=order_number)
+    order.is_ordered = True
+    order.save()
+#Chuyển tất cả số lượng hàng trong giỏ hàng vào table Order Product
+    cart_items = CartItem.objects.filter(user=request.user)
+    for item in cart_items:
+        orderproduct = OrderProduct()
+        orderproduct.order_id = order.id
+        orderproduct.user_id = request.user.id
+        orderproduct.product_id = item.product_id
+        orderproduct.quantity = item.quantity
+        orderproduct.product_price = item.product.price
+        orderproduct.ordered = True
+        orderproduct.save()
+
+        cart_items = CartItem.objects.get(id=item.id)
+        product_variation = cart_items.variations.all()
+        orderproduct = OrderProduct.objects.get(id=orderproduct.id)
+        orderproduct.variations.set(product_variation)
+        orderproduct.save()
+        
+
+# Giảm số lượng sản phẩm đã bán
+        product = Product.objects.get(id=item.product_id)
+        product.stock -= item.quantity
+        product.save()
+
+# Xóa giỏ hàng
+    CartItem.objects.filter(user=request.user).delete()
+
+# Hoàn tất đơn hàng
+    order = Order.objects.get(order_number=order_number)
     ordered_products = OrderProduct.objects.filter(order_id=order.id)
 
     subtotal = 0
