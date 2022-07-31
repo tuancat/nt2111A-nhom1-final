@@ -87,7 +87,7 @@ DATABASES = {
         'NAME': 'ecproject',
         'HOST':'localhost',
         'USER':'root',
-        'PASSWORD':'NhanLeno@138589'
+        'PASSWORD':''
     }
 }
 
