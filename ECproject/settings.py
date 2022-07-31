@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -86,7 +87,7 @@ DATABASES = {
         'NAME': 'ecproject',
         'HOST':'localhost',
         'USER':'root',
-        'PASSWORD':''
+        'PASSWORD':'NhanLeno@138589'
     }
 }
 
@@ -133,7 +134,8 @@ STATICFILES_DIRS = [
 
 #media files configuration
 MEDIA_URL = 'media/'
-MEDIA_ROOT = BASE_DIR /'media'
+#MEDIA_ROOT = BASE_DIR /'media'
+MEDIA_ROOT = os.path.join(BASE_DIR /'media')
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
@@ -149,8 +151,10 @@ MESSAGE_TAGS = {
 }
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_USE_TLS = True  
-EMAIL_HOST = 'in-v3.mailjet.com'  
-EMAIL_HOST_USER = 'ecproject.info@gmail.com'  
-EMAIL_HOST_PASSWORD = '.Y2v3*/x:FGRUpT'  
-EMAIL_PORT = 587  
+EMAIL_HOST = 'smtp.mailtrap.io'
+EMAIL_HOST_USER = 'c5f4f4b57c66b6'
+EMAIL_HOST_PASSWORD = '303fef87f47691'
+EMAIL_PORT = '2525'
+
+
+USE_THOUSAND_SEPARATOR = True

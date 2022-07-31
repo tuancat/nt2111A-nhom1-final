@@ -110,6 +110,17 @@ def order_complete(request):
 # Xóa giỏ hàng
     CartItem.objects.filter(user=request.user).delete()
 
+# Gửi đơn hàng vào mail của khách
+    mail_subject = 'Cảm ơn bạn đã đặt hàng của chúng tôi'
+    message = render_to_string('orders/order_received_email.html', {
+        'user': request.user,
+        'order': order,
+    })
+
+    to_email = request.user.email
+    send_email = EmailMessage(mail_subject, message, to=[to_email])
+    send_email.send()
+
 # Hoàn tất đơn hàng
     order = Order.objects.get(order_number=order_number)
     ordered_products = OrderProduct.objects.filter(order_id=order.id)
