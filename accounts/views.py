@@ -171,7 +171,7 @@ def forgotPassword(request):
             send_email = EmailMessage(mail_subject, message, to = [to_email])
             send_email.send()
 
-            messages.success(request, 'Password reset email has been sent to your email address.')
+            messages.success(request, 'Bạn vui lòng kiểm tra email để lấy lại mật khẩu.')
             return redirect('login')
 
         else:
